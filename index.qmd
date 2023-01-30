@@ -1,14 +1,14 @@
 ---
 title: "Homework 1"
-author: "[Insert your name here]{style='background-color: yellow;'}"
+author: "[Alvaro Tapia]{style='background-color: yellow;'}"
 toc: true
 title-block-banner: true
 title-block-style: default
-# format: html
-format: pdf
+# format: pdf
+format: html
 ---
 
-[Link to the Github repository](https://github.com/psu-stat380/hw-1)
+[Link to the Github repository](https://github.com/abt5572/hw-1-abt5572)
 
 ---
 
@@ -51,7 +51,7 @@ In this question, we will walk through the process of _forking_ a `git` reposito
 2. Clone your Github repository on your local machine
 
     ```bash
-    $ git clone <<insert your repository url here>>
+    $ git clone <<(https://github.com/abt5572/hw-1-abt5572)>>
     $ cd hw-1
     ```
 
@@ -118,6 +118,39 @@ For the following questions, provide your answers in a code cell.
 
 1. Sort the values of `my_vec_double` in ascending order. 
 
+## Answers question 2
+
+1. The vector type is string/char.
+
+2. Coding:
+
+```{R}
+my_vec_double <- as.double(my_vec)
+my_vec_integer <- as.integer(my_vec)
+my_vec_double
+my_vec_integer
+```
+
+3. Coding:
+
+```{R}
+my_vec_bool <- c()
+for (i in my_vec_double){
+  if (i >= 0) {
+    my_vec_bool <- append(my_vec_bool, FALSE)
+  } else {
+    my_vec_bool <- append(my_vec_bool, TRUE)
+  }
+}
+my_vec_bool
+```
+
+4. Coding:
+
+```{R}
+sort(my_vec_double)
+```
+
 
 <br><br><br><br>
 <br><br><br><br>
@@ -149,6 +182,24 @@ $$
 
 Recall the discussion in class on how `R` fills in matrices
 :::
+
+```{R}
+x <- matrix(
+    c(1, 2, 3, 4, 5, 6, 7, 8, 9),
+    nrow=3,
+    byrow = TRUE
+)
+x
+```
+
+```{R}
+list_1 <- c(1:100)
+list_2 <- list_1*list_1
+list_2
+mtx1 <- matrix(list_1, nrow = 1, ncol = 100)
+mtx1 <- rbind(mtx1, list_2)
+mtx1
+```
 
 In the next part, we will discover how knowledge of the way in which a matrix is stored in memory can inform better code choices. To this end, the following function takes an input $n$ and creates an $n \times n$ matrix with random entries. 
 
@@ -182,21 +233,22 @@ mean(M)
 
 ```R
 row_wise_scan <- function(x){
-    n <- nrow(x)
-    m <- ncol(x)
-
-    # Insert your code here
-    count <- 0
-    for(...){
-        for(...){
-            if(...){
-                count <- count + 1 
-            }
-        }
+  n <- nrow(x)
+  m <- ncol(x)
+  
+  # Insert your code here
+  count <- 0
+  for(i in seq(1,n, by =1)){
+    for(j in seq(1,n, by =1)){
+      if(x[i, j] >= 0 ){
+        count <- count + 1 
+      }
     }
-
-    return(count)
+  }
+  
+  return(count)
 }
+
 ```
 
 
@@ -204,24 +256,35 @@ row_wise_scan <- function(x){
 
 ```R
 col_wise_scan <- function(x){
-    count <- 0
-    
-    ... # Insert your code here
-
-    return(count)
+  n <- nrow(x)
+  m <- ncol(x)
+  
+  # Insert your code here
+  count <- 0
+  for(i in seq(1,n, by =1)){
+    for(j in seq(1,n, by =1)){
+      if(x[j, i] >= 0 ){
+        count <- count + 1 
+      }
+    }
+  }
+  
+  return(count)
 }
 ```
 You can check if your code is doing what it's supposed to using the function here[^footnote]
 
 4. Between `col_wise_scan` and `row_wise_scan`, which function do you expect to take shorter to run? Why?
 
+I used to think that they would all take the same time but after learning in class that when scanning the rows first is better in regard to time if the matrix is small, then I would say the col_wise_scan would be faster.
+
 5. Write a function `time_scan` which takes in a method `f` and a matrix `M` and outputs the amount of time taken to run `f(M)`
 
 ```R
 time_scan <- function(f, M){
-    initial_time <- ... # Write your code here
+    initial_time <- Sys.time()
     f(M)
-    final_time <- ...  # Write your code here
+    final_time <- Sys.time()
     
     total_time_taken <- final_time - initial_time
     return(total_time_taken)
@@ -233,10 +296,17 @@ Provide your output to
 ```R
 list(
     row_wise_time = time_scan(row_wise_scan, M),
-    col_wise_time = time_scan(row_wise_scan, M)
+    col_wise_time = time_scan(col_wise_scan, M)
 )
 ```
 Which took longer to run? 
+
+The one that took longer to run was the col_wise_scan. When running the functions in Rstudio:
+row_wise_time:
+Time difference of 0.0079 secs
+
+col_wise_time:
+Time difference of 0.032686 secs
 
 6. Repeat this experiment now when:
     * `M` is a $100 \times 100$ matrix
@@ -244,6 +314,8 @@ Which took longer to run?
     * `M` is a $5000 \times 5000$ matrix
 
 What can you conclude?
+
+After running them in Rstudio I have learned that when a matrix is very large it should be better to use row_wise_scan because it will be executed in less time than scanning with columns. So the larger the matrix is the more efficient the row_wise_scan is.
 
 <br><br><br><br>
 <br><br><br><br>
@@ -265,3 +337,4 @@ sessionInfo()
         row_wise_scan(x) == col_wise_scan(x)
     }) %>% sum == 100
     ```
+Got TRUE in my Rstudio file
