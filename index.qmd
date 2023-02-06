@@ -4,8 +4,8 @@ author: "[Alvaro Tapia]{style='background-color: yellow;'}"
 toc: true
 title-block-banner: true
 title-block-style: default
-# format: pdf
-format: html
+format: pdf
+#format: html
 ---
 
 [Link to the Github repository](https://github.com/abt5572/hw-1-abt5572)
